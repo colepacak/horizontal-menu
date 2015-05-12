@@ -1,0 +1,3 @@
+$(function() {
+  $('.horizontal-menu').horizontalMenu();
+});

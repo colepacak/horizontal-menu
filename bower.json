@@ -1,0 +1,14 @@
+{
+  "name": "horizontal-menu",
+  "version": "0.0.0",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components"
+  ],
+  "dependencies": {
+    "compass-mixins": "~1.0.2",
+    "breakpoint-sass": "~2.5.0"
+  }
+}
