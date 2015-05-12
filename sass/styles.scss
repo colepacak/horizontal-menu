@@ -82,7 +82,6 @@ ul:not(.hm-menu-depth-1) {
   position: absolute;
   z-index: -1;
   left: 0;
-  margin-left: 10px;
   bottom: 0;
   @include box-sizing(border-box);
   width: 100vw;
@@ -114,6 +113,10 @@ ul:not(.hm-menu-depth-1) {
       color: $white;
     }
   }
+}
+
+ul.hm-menu-depth-2 {
+  margin-left: 10px;
 }
 
 // menu items

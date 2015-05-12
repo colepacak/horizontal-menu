@@ -8,24 +8,16 @@
       hasChildren: 'hm-item-has-children',
       activeTrail: 'hm-active-trail'
     };
-    this.items = {};
+    this.items = $('li', this.container);
     this.leaveTimer;
     this.isOpen = false;
-    // elements
-    // this.items.primary = [];
-    // set after plugin classes are in place
-    // this.items.primary = $('> ul > li.' + this.classes.hasChildren, this.container);
-    // this.items.secondary = [];
-    // set after plugin classes are in place
-    // this.items.secondary = this.items.primary.find('> ul > li');
-
-    // set after plugin classes are in place
-    // this.primaryActiveTrail = this.items.primary.filter('.' + this.classes.activeTrail);
+    this.itemsActiveTrail = this.items.filter('.' + this.classes.activeTrail);
   }
 
   HorizontalMenu.prototype = {
     init: function() {
-      this.setCssClasses();
+      this.setCssClasses()
+        .setInitialActiveTrail();
     },
     setMenuDepth: function() {
       var context = this.container;
@@ -81,49 +73,53 @@
         .setParentItems();
       return this;
     },
-    // setItems: function() {
-    //   // items, primary and secondary, and primaryActiveTrail
-    // },
-    // open: function() {
-    //   if (!this.isOpen) {
-    //     this.container.addClass('hm-open');
-    //     this.isOpen = true;
-    //   }
-    // },
-    // close: function() {
-    //   if (this.container.hasClass('hm-open')) {
-    //     var that = this;
-    //     this.container.removeClass('hm-open')
-    //       .delay(500)
-    //       .queue(function(next) {
-    //         that.items.primary.filter('.hm-item-current')
-    //           .removeClass('hm-item-current');
-    //         that.isOpen = false;
-    //         next();
-    //       });
-    //   }
-    // },
-    // reset: function() {
-    //   this.setCurrentItem(this.primaryActiveTrail);
-    // },
-    // setCurrentItem: function(item, noDelay) {
-    //   if (noDelay) {
-    //     this.items.primary.removeClass('hm-item-current');
-    //     item.addClass('hm-item-current');
-    //     this.open();
-    //   } else if (item.length) {
-    //     var that = this;
-    //     this.items.primary.removeClass('hm-item-current');
-    //     item.addClass('hm-item-current')
-    //       .delay(500)
-    //       .queue(function(next) {
-    //         that.open();
-    //         next();
-    //       });
-    //   } else {
-    //     this.close();
-    //   }
-    // }
+    setInitialActiveTrail: function() {
+      // initially use active trail as current item, no slide
+      if (this.itemsActiveTrail.length > 0) {
+        this.setCurrentItem(this.itemsActiveTrail, true);
+      }
+      return this;
+    },
+    open: function() {
+      if (!this.isOpen) {
+        this.container.addClass('hm-open');
+        this.isOpen = true;
+      }
+    },
+    close: function() {
+      if (this.container.hasClass('hm-open')) {
+        var that = this;
+        this.container.removeClass('hm-open')
+          .delay(500)
+          .queue(function(next) {
+            that.items.filter('.hm-item-current')
+              .removeClass('hm-item-current');
+            that.isOpen = false;
+            next();
+          });
+      }
+    },
+    reset: function() {
+      this.setCurrentItem(this.itemsActiveTrail);
+    },
+    setCurrentItem: function(item, noDelay) {
+      if (noDelay) {
+        this.items.removeClass('hm-item-current');
+        item.addClass('hm-item-current');
+        this.open();
+      } else if (item.length) {
+        var that = this;
+        this.items.removeClass('hm-item-current');
+        item.addClass('hm-item-current')
+          .delay(500)
+          .queue(function(next) {
+            that.open();
+            next();
+          });
+      } else {
+        this.close();
+      }
+    }
   };
 
   $.fn.horizontalMenu = function(options) {
@@ -140,11 +136,6 @@
       var menu = new HorizontalMenu(settings);
       menu.init();
 
-      // initially use active trail as current item, no slide
-      // if (menu.primaryActiveTrail.length > 0) {
-      //   menu.setCurrentItem(menu.primaryActiveTrail, true);
-      // }
-      //
       // // event handlers
       // menu.items.primary
       //   .children('a')

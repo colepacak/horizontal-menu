@@ -9,5 +9,6 @@ Goals:
 TODO:
 * ~~have js add helper classes to primary and secondary menus to avoid overuse of direct descendent selector~~
 * ~~clean up styling~~
-* figure out how to have dynamic css classes based on options
+* ~~apply css classes based on options~~
+* add namespaced active trail class
 * integrate event handlers into class definition
