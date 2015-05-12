@@ -5,7 +5,7 @@ $black: rgb(0, 0, 0);
 $gold: rgb(210, 181, 62);
 $white: rgb(255, 255, 255);
 
-$secondary-menu-height: 46px;
+$sub-menu-height: 46px;
 
 // Breakpoints
 $mobile-portrait: 320px;
@@ -22,8 +22,8 @@ $tablet-landscape-only: $tablet-landscape $desktop - 1;
   z-index: 1;
   @include legacy-pie-clearfix;
   &.hm-open {
-    li.hm-current > ul {
-      bottom: -1 * $secondary-menu-height !important;
+    li.hm-item-current > ul {
+      bottom: -1 * $sub-menu-height !important;
     }
   }
   ul {
@@ -41,127 +41,122 @@ $tablet-landscape-only: $tablet-landscape $desktop - 1;
     text-transform: uppercase;
     text-decoration: none;
     &:focus {
-      // color: $gold;
-    }
-    &:focus {
       outline: none;
     }
     &.active {
       color: $gold;
     }
   }
-  // primary menu
-  > ul {
-    position: relative;
-    float: left;
-    margin-left: 15px;
-    @include breakpoint($tablet-landscape) {
-      margin-left: 5px;
-    }
-    &:before {
-      display: block;
-      position: absolute;
-      top: 0;
-      right: 100%;
-      width: 1000px;
-      height: 48px;
-      content: "";
-      background: $black;
-    }
-    &:after {
-      display: block;
-      position: absolute;
-      top: 0;
-      left: 100%;
-      width: 1000px;
-      height: 48px;
-      content: "";
-      background: $black;
-    }
-    // primary menu items
-    > li {
-      position: relative;
-      &.hm-item-has-children {
-        > a:after {
-          display: block;
-          position: absolute;
-          bottom: 17px;
-          right: 5px;
-          content: '\203A';
-          font-size: 0.7em;
-          line-height: 0.8em;
-          @include rotate(90deg);
-        }
-      }
-      &:hover > a {
-        color: $gold;
-      }
-      > a {
-        z-index: 1;
-        padding: 13px 20px;
-        font-size: 18px;
-        background: $black;
-      }
-      // secondary menu
-      > ul {
-        display: none;
-        position: absolute;
-        z-index: -1;
-        left: 0;
-        margin-left: 10px;
-        bottom: 0;
-        @include box-sizing(border-box);
-        width: 100vw;
-        min-height: $secondary-menu-height;
-        @include transition(bottom 0.3s ease);
-        @include breakpoint($tablet-landscape) {
-          background: $gold;
-        }
-        &:before {
-          display: block;
-          position: absolute;
-          top: 0;
-          right: 100%;
-          height: $secondary-menu-height;
-          width: 200%;
-          content: "";
-          background: $gold;
-        }
-        // secondary menu items
-        li {
-          display: inline-block;
-          float: none;
-        }
-        a {
-          font-size: 14px;
-          color: $black;
-          padding: 14px 12px;
-          text-transform: none;
-          &.active,
-          &:focus,
-          &:hover {
-            color: $white;
-          }
-        }
-      }
+}
+
+// menus
+ul.hm-menu-depth-1 {
+  position: relative;
+  float: left;
+  margin-left: 15px;
+  &:before {
+    display: block;
+    position: absolute;
+    top: 0;
+    right: 100%;
+    width: 1000px;
+    height: 48px;
+    content: "";
+    background: $black;
+  }
+  &:after {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 100%;
+    width: 1000px;
+    height: 48px;
+    content: "";
+    background: $black;
+  }
+}
+
+// sub-menus
+ul:not(.hm-menu-depth-1) {
+  display: none;
+  position: absolute;
+  z-index: -1;
+  left: 0;
+  margin-left: 10px;
+  bottom: 0;
+  @include box-sizing(border-box);
+  width: 100vw;
+  min-height: $sub-menu-height;
+  @include transition(bottom 0.3s ease);
+  background: $gold;
+  &:before {
+    display: block;
+    position: absolute;
+    top: 0;
+    right: 100%;
+    height: $sub-menu-height;
+    width: 200%;
+    content: "";
+    background: $gold;
+  }
+  li {
+    display: inline-block;
+    float: none;
+  }
+  a {
+    font-size: 14px;
+    color: $black;
+    padding: 14px 12px;
+    text-transform: none;
+    &.active,
+    &:focus,
+    &:hover {
+      color: $white;
     }
   }
-  li.hm-current {
-    > a {
-      position: relative;
-      color: $gold;
+}
+
+// menu items
+.hm-item-depth-1 {
+  position: relative;
+  &.hm-item-has-children {
+    > a:after {
+      display: block;
+      position: absolute;
+      bottom: 17px;
+      right: 5px;
+      content: '\203A';
+      font-size: 0.7em;
+      line-height: 0.8em;
+      @include rotate(90deg);
     }
-    > ul {
-      display: block !important;
-      z-index: -1;
-      &:before {
-        position: absolute;
-        left: -100%;
-        height: $secondary-menu-height;
-        background: $gold;
-        content: '';
-        width: 100%;
-      }
+  }
+  &:hover > a {
+    color: $gold;
+  }
+  > a {
+    z-index: 1;
+    padding: 13px 20px;
+    font-size: 18px;
+    background: $black;
+  }
+}
+
+.hm-item-current {
+  > a {
+    position: relative;
+    color: $gold;
+  }
+  > ul {
+    display: block !important;
+    z-index: -1;
+    &:before {
+      position: absolute;
+      left: -100%;
+      height: $sub-menu-height;
+      background: $gold;
+      content: '';
+      width: 100%;
     }
   }
 }

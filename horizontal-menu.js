@@ -4,18 +4,13 @@
     // store settings for later use
     this.settings = settings;
     this.container = $(settings.container);
-    this.items = {};
-    this.leaveTimer;
-    this.isOpen = false;
     this.classes = {
       hasChildren: 'hm-item-has-children',
       activeTrail: 'hm-active-trail'
     };
-    // move to setCssClasses
-    // this.classes = {
-    //   hasChildren: settings.classes.hasChildren,
-    //   activeTrail: settings.classes.activeTrail
-    // },
+    this.items = {};
+    this.leaveTimer;
+    this.isOpen = false;
     // elements
     // this.items.primary = [];
     // set after plugin classes are in place
@@ -30,11 +25,9 @@
 
   HorizontalMenu.prototype = {
     init: function() {
-      this.setMenuClasses()
-        .setItemClasses()
-        .setParentClasses();
+      this.setCssClasses();
     },
-    setMenuClasses: function() {
+    setMenuDepth: function() {
       var context = this.container;
       var depth = 1;
 
@@ -58,7 +51,7 @@
       }
       return this;
     },
-    setItemClasses: function() {
+    setItemDepth: function() {
       var depth = 1;
 
       var setMenu = function(d) {
@@ -76,16 +69,18 @@
       }
       return this;
     },
-    setParentClasses: function() {
+    setParentItems: function() {
       var settingsClass = this.settings.classes.hasChildren;
 
       $('li.' + settingsClass, this.container).addClass(this.classes.hasChildren);
       return this;
-    } 
-    // setParentItems: function() {
-    //   var $itemsWithChildren = $('> ul > li.' + this.settings.classes.hasChildren, this.container);
-    //   $itemsWithChildren.addClass('hm-primary-has-children');
-    // },
+    },
+    setCssClasses: function() {
+      this.setMenuDepth()
+        .setItemDepth()
+        .setParentItems();
+      return this;
+    },
     // setItems: function() {
     //   // items, primary and secondary, and primaryActiveTrail
     // },
@@ -101,8 +96,8 @@
     //     this.container.removeClass('hm-open')
     //       .delay(500)
     //       .queue(function(next) {
-    //         that.items.primary.filter('.hm-current')
-    //           .removeClass('hm-current');
+    //         that.items.primary.filter('.hm-item-current')
+    //           .removeClass('hm-item-current');
     //         that.isOpen = false;
     //         next();
     //       });
@@ -113,13 +108,13 @@
     // },
     // setCurrentItem: function(item, noDelay) {
     //   if (noDelay) {
-    //     this.items.primary.removeClass('hm-current');
-    //     item.addClass('hm-current');
+    //     this.items.primary.removeClass('hm-item-current');
+    //     item.addClass('hm-item-current');
     //     this.open();
     //   } else if (item.length) {
     //     var that = this;
-    //     this.items.primary.removeClass('hm-current');
-    //     item.addClass('hm-current')
+    //     this.items.primary.removeClass('hm-item-current');
+    //     item.addClass('hm-item-current')
     //       .delay(500)
     //       .queue(function(next) {
     //         that.open();
