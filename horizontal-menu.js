@@ -4,20 +4,23 @@
     // store settings for later use
     this.settings = settings;
     this.container = $(settings.container);
-    this.classes = {
-      hasChildren: 'hm-item-has-children',
-      activeTrail: 'hm-active-trail'
-    };
-    this.items = $('li', this.container);
-    this.leaveTimer;
+    this.items = [];
     this.isOpen = false;
-    this.itemsActiveTrail = this.items.filter('.' + this.classes.activeTrail);
+    this.activeTrail = [];
+    this.leaveTimer;
   }
 
   HorizontalMenu.prototype = {
+    classes: {
+      hasChildren: 'hm-item-has-children',
+      activeTrail: 'hm-active-trail'
+    },
     init: function() {
-      this.setCssClasses()
-        .setInitialActiveTrail();
+      this.setDepth()
+        .setItems()
+        .setActiveTrail()
+        .setCurrent(this.activeTrail, true)
+        .bindEvents();
     },
     setMenuDepth: function() {
       var context = this.container;
@@ -37,6 +40,13 @@
 
       while (menu.length) {
         menu.addClass('hm-menu-depth-' + depth);
+
+        var isDepthOdd = depth % 2;
+        if (depth > 1 && isDepthOdd) {
+          menu.addClass('hm-sub-menu hm-sub-menu-odd');
+        } else if (depth > 1) {
+          menu.addClass('hm-sub-menu hm-sub-menu-even');
+        }
         context = menu;
         menu = setMenu(context);
         depth++;
@@ -61,23 +71,70 @@
       }
       return this;
     },
-    setParentItems: function() {
-      var settingsClass = this.settings.classes.hasChildren;
-
-      $('li.' + settingsClass, this.container).addClass(this.classes.hasChildren);
-      return this;
-    },
-    setCssClasses: function() {
+    // assign css classes based on how deep a menu and its items sit in the
+    //  menu structure, relative to the overall container
+    setDepth: function() {
       this.setMenuDepth()
-        .setItemDepth()
-        .setParentItems();
+        .setItemDepth();
       return this;
     },
-    setInitialActiveTrail: function() {
-      // initially use active trail as current item, no slide
-      if (this.itemsActiveTrail.length > 0) {
-        this.setCurrentItem(this.itemsActiveTrail, true);
+    // only manage menu items that have a child ul. menu items with no children
+    // will simply function as links
+    setItems: function() {
+      var hasChildrenFromSettings = this.settings.classes.hasChildren;
+      var items = $('li.' + hasChildrenFromSettings, this.container);
+      this.items = items.addClass(this.classes.hasChildren);
+      return this;
+    },
+    setActiveTrail: function() {
+      var activeFromSettings = $('.' + this.settings.classes.activeTrail, this.container);
+      this.activeTrail = activeFromSettings.addClass(this.classes.activeTrail);
+      return this;
+    },
+    setCurrent: function(item, noDelay) {
+      if (noDelay && item.length) {
+        this.items.removeClass('hm-current');
+        item.addClass('hm-current');
+        this.open();
+      } else if (item.length) {
+        var that = this;
+        this.items.removeClass('hm-current');
+        item.addClass('hm-current')
+          .delay(500)
+          .queue(function(next) {
+            that.open();
+            next();
+          });
+      } else {
+        this.close();
       }
+      return this;
+    },
+    bindEvents: function() {
+      var that = this;
+      this.items
+        .children('a')
+        .on('click', function(event) {
+          // instead of following primary link menu, show it's children
+          event.preventDefault();
+          that.setCurrent($(this).parent());
+        });
+
+      // reset active trail, close the menu when mousing away from open menu
+      // with no active trail
+      this.container.on('mouseleave', function() {
+        that.leaveTimer = setTimeout(function() {
+          that.reset();
+        }, 1000);
+      });
+
+      // allows user to quickly navigate away and right back to menu without
+      // resetting current menu item
+      this.container.on('mouseenter', function() {
+        if (typeof that.leaveTimer !== 'undefined') {
+          clearTimeout(that.leaveTimer);
+        }
+      });
       return this;
     },
     open: function() {
@@ -92,33 +149,15 @@
         this.container.removeClass('hm-open')
           .delay(500)
           .queue(function(next) {
-            that.items.filter('.hm-item-current')
-              .removeClass('hm-item-current');
+            that.items.filter('.hm-current')
+              .removeClass('hm-current');
             that.isOpen = false;
             next();
           });
       }
     },
     reset: function() {
-      this.setCurrentItem(this.itemsActiveTrail);
-    },
-    setCurrentItem: function(item, noDelay) {
-      if (noDelay) {
-        this.items.removeClass('hm-item-current');
-        item.addClass('hm-item-current');
-        this.open();
-      } else if (item.length) {
-        var that = this;
-        this.items.removeClass('hm-item-current');
-        item.addClass('hm-item-current')
-          .delay(500)
-          .queue(function(next) {
-            that.open();
-            next();
-          });
-      } else {
-        this.close();
-      }
+      this.setCurrent(this.activeTrail);
     }
   };
 
@@ -135,29 +174,6 @@
     return this.each(function() {
       var menu = new HorizontalMenu(settings);
       menu.init();
-
-      // // event handlers
-      // menu.items.primary
-      //   .children('a')
-      //   .on('click', function(event) {
-      //     // instead of following primary link menu, show it's children
-      //     event.preventDefault();
-      //     menu.setCurrentItem($(this).parent());
-      //   });
-      //
-      // // reset active trail, close the menu when mousing away from open menu with no active trail
-      // menu.container.on('mouseleave', function() {
-      //   menu.leaveTimer = setTimeout(function() {
-      //     menu.reset();
-      //   }, 1000);
-      // });
-      //
-      // // allows user to quickly navigate away and right back to menu
-      // menu.container.on('mouseenter', function() {
-      //   if (typeof menu.leaveTimer !== 'undefined') {
-      //     clearTimeout(menu.leaveTimer);
-      //   }
-      // });
     });
   };
 
