@@ -102,13 +102,13 @@ ul.hm-sub-menu {
     width: 200%;
     content: ""; }
   ul.hm-sub-menu.hm-sub-menu-even {
-    background: #d3d3d3; }
+    background: #dbdbdb; }
     ul.hm-sub-menu.hm-sub-menu-even:before {
-      background: #d3d3d3; }
+      background: #dbdbdb; }
   ul.hm-sub-menu.hm-sub-menu-odd {
-    background: #a8a8a8; }
+    background: #d3d3d3; }
     ul.hm-sub-menu.hm-sub-menu-odd:before {
-      background: #a8a8a8; }
+      background: #d3d3d3; }
   ul.hm-sub-menu li {
     display: inline-block;
     float: none; }

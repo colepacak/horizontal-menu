@@ -20,7 +20,8 @@
         .setItems()
         .setActiveTrail()
         .setCurrent(this.activeTrail, true)
-        .bindEvents();
+        .bindEvents()
+        .settings.onInit(this);
     },
     setMenuDepth: function() {
       var context = this.container;
@@ -99,6 +100,7 @@
       } else if (item.length) {
         var that = this;
         this.items.removeClass('hm-current');
+
         item.addClass('hm-current')
           .delay(500)
           .queue(function(next) {
@@ -141,6 +143,7 @@
       if (!this.isOpen) {
         this.container.addClass('hm-open');
         this.isOpen = true;
+        this.settings.onOpen(this);
       }
     },
     close: function() {
@@ -152,6 +155,7 @@
             that.items.filter('.hm-current')
               .removeClass('hm-current');
             that.isOpen = false;
+            that.settings.onClose(this);
             next();
           });
       }
@@ -168,7 +172,10 @@
       classes: {
         hasChildren: 'expanded',
         activeTrail: 'is-active-trail'
-      }
+      },
+      onInit: function() {},
+      onOpen: function() {},
+      onClose: function() {},
     }, options);
 
     return this.each(function() {
@@ -176,5 +183,16 @@
       menu.init();
     });
   };
+
+  $.fn.reverse = function() {
+    return this.each(function() {
+      var r = [];
+
+      for(var i = this.length - 1; i > -1; i--) {
+        r.push(this[i]);
+      }
+      return r;
+    });
+  }
 
 })(jQuery);

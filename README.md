@@ -14,5 +14,5 @@ TODO:
 * ~~apply css classes based on options~~
 * ~~add namespaced active trail class~~
 * ~~integrate event handlers into class definition~~
-* add event callbacks
+* ~~add event callbacks~~
 * allow multiple depths of items
