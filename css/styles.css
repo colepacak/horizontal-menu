@@ -21,12 +21,12 @@
     clear: both;
     overflow: hidden;
     visibility: hidden; }
-  .horizontal-menu.hm-open li.hm-current > ul {
-    bottom: -46px !important; }
   .horizontal-menu ul {
     padding: 0;
     margin: 0;
     list-style: none; }
+    .horizontal-menu ul.hm-open > li.hm-current > ul {
+      bottom: -46px !important; }
   .horizontal-menu li {
     display: block;
     float: left; }
@@ -55,11 +55,12 @@
     .horizontal-menu a.active {
       color: #d2b53e; }
 
-ul.hm-menu-depth-1 {
+ul.hm-menu-primary {
   position: relative;
   float: left;
-  margin-left: 15px; }
-  ul.hm-menu-depth-1:before {
+  margin-left: 15px;
+  position: relative; }
+  ul.hm-menu-primary:before {
     display: block;
     position: absolute;
     top: 0;
@@ -68,7 +69,7 @@ ul.hm-menu-depth-1 {
     height: 48px;
     content: "";
     background: black; }
-  ul.hm-menu-depth-1:after {
+  ul.hm-menu-primary:after {
     display: block;
     position: absolute;
     top: 0;
@@ -77,11 +78,16 @@ ul.hm-menu-depth-1 {
     height: 48px;
     content: "";
     background: black; }
+  ul.hm-menu-primary li:hover > a {
+    color: #d2b53e; }
+  ul.hm-menu-primary li > a {
+    z-index: 1;
+    padding: 13px 20px;
+    font-size: 18px;
+    background: black; }
 
-ul.hm-sub-menu {
-  display: none;
+ul.hm-menu-sub {
   position: absolute;
-  z-index: -1;
   left: 0;
   bottom: 0;
   -webkit-box-sizing: border-box;
@@ -89,11 +95,12 @@ ul.hm-sub-menu {
   box-sizing: border-box;
   width: 100vw;
   min-height: 46px;
+  margin-left: 23px;
   -webkit-transition: bottom 0.3s ease;
   -moz-transition: bottom 0.3s ease;
   -o-transition: bottom 0.3s ease;
   transition: bottom 0.3s ease; }
-  ul.hm-sub-menu:before {
+  ul.hm-menu-sub:before {
     display: block;
     position: absolute;
     top: 0;
@@ -101,37 +108,24 @@ ul.hm-sub-menu {
     height: 46px;
     width: 200%;
     content: ""; }
-  ul.hm-sub-menu.hm-sub-menu-even {
+  ul.hm-menu-sub.hm-menu-sub-even {
     background: #dbdbdb; }
-    ul.hm-sub-menu.hm-sub-menu-even:before {
+    ul.hm-menu-sub.hm-menu-sub-even:before {
       background: #dbdbdb; }
-  ul.hm-sub-menu.hm-sub-menu-odd {
+  ul.hm-menu-sub.hm-menu-sub-odd {
     background: #d3d3d3; }
-    ul.hm-sub-menu.hm-sub-menu-odd:before {
+    ul.hm-menu-sub.hm-menu-sub-odd:before {
       background: #d3d3d3; }
-  ul.hm-sub-menu li {
+  ul.hm-menu-sub li {
     display: inline-block;
     float: none; }
-  ul.hm-sub-menu a {
+  ul.hm-menu-sub a {
     font-size: 14px;
     color: black;
     padding: 14px 12px;
     text-transform: none; }
-    ul.hm-sub-menu a.active, ul.hm-sub-menu a:focus, ul.hm-sub-menu a:hover {
+    ul.hm-menu-sub a.active, ul.hm-menu-sub a:focus, ul.hm-menu-sub a:hover {
       color: white; }
-
-ul.hm-menu-depth-2 {
-  margin-left: 10px; }
-
-.hm-item-depth-1 {
-  position: relative; }
-  .hm-item-depth-1:hover > a {
-    color: #d2b53e; }
-  .hm-item-depth-1 > a {
-    z-index: 1;
-    padding: 13px 20px;
-    font-size: 18px;
-    background: black; }
 
 .hm-current > a {
   position: relative;

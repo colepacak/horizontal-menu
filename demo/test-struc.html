@@ -1,0 +1,75 @@
+<html>
+<head></head>
+<body>
+  <div class="horizontal-menu">
+    <ul>
+      <li class="expanded">
+        <a href="#">Item 1</a>
+        <ul>
+          <li class="expanded">
+            <a href="#">Item 1a</a>
+            <ul>
+              <li>
+                <a href="#">Item 1aI</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li class="expanded">
+        <a href="#">Item 2</a>
+        <ul>
+          <li class="expanded">
+            <a href="#">Item 2a</a>
+            <ul>
+              <li>
+                <a href="#">Item 2aI</a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</body>
+</html>
+
+<html>
+<head></head>
+<body>
+  <div class="horizontal-menu">
+    <ul class="hm-top-level">
+      <li id="123" class="expanded">
+        <a href="#">Item 1</a>
+      </li>
+      <li id="456" class="expanded">
+        <a href="#">Item 2</a>
+      </li>
+    </ul>
+
+    <ul id="child-of-123"class="hm-sub-menu hm-sub-menu-odd">
+      <li id="234" class="expanded">
+        <a href="#">Item 1a</a>
+      </li>
+    </ul>
+
+    <ul id="child-of-234" class="hm-sub-menu hm-sub-menu-even">
+      <li id="345">
+        <a href="#">Item 1aI</a>
+      </li>
+    </ul>
+
+    <ul id="child-of-456" class="hm-sub-menu hm-sub-menu-odd">
+      <li id="567" class="expanded">
+        <a href="#">Item 2a</a>
+      </li>
+    </ul>
+
+    <ul id="child-of-567" class="hm-sub-menu hm-sub-menu-even">
+      <li id="678">
+        <a href="#">Item 2aI</a>
+      </li>
+    </ul>
+  </div>
+</body>
+</html>

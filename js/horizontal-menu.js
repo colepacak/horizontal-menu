@@ -15,13 +15,35 @@
       hasChildren: 'hm-item-has-children',
       activeTrail: 'hm-active-trail'
     },
+
     init: function() {
-      this.setDepth()
-        .setItems()
+      this.setParentItems()
         .setActiveTrail()
-        .setCurrent(this.activeTrail, true)
-        .bindEvents()
-        .settings.onInit(this);
+        .setItemIds()
+        .setMenuDepth()
+        .setMenuIds()
+        .gatherMenus();
+      // this.setDepth()
+      //   .setItems()
+      //   .setCurrent(this.activeTrail, true)
+      //   .bindEvents()
+      //   .settings.onInit(this);
+    },
+    // only manage menu items that have a child ul. menu items with no children
+    // will simply function as links
+    setParentItems: function() {
+      var settingsClass = this.settings.classes.hasChildren;
+      var items = $('li.' + settingsClass, this.container);
+      this.items = items.addClass(this.classes.hasChildren);
+      return this;
+    },
+    setItemIds: function() {
+      var items = $('li.' + this.classes.hasChildren);
+      items.each(function() {
+        var id = $.uuid();
+        $(this).prop('id', id);
+      });
+      return this;
     },
     setMenuDepth: function() {
       var context = this.container;
@@ -40,53 +62,75 @@
       var menu = setMenu(context);
 
       while (menu.length) {
-        menu.addClass('hm-menu-depth-' + depth);
-
         var isDepthOdd = depth % 2;
-        if (depth > 1 && isDepthOdd) {
-          menu.addClass('hm-sub-menu hm-sub-menu-odd');
-        } else if (depth > 1) {
-          menu.addClass('hm-sub-menu hm-sub-menu-even');
+
+        if (depth === 1) {
+          menu.addClass('hm-menu-primary');
+        } else {
+          menu.addClass('hm-menu-sub');
         }
+
+        if (depth > 1 && isDepthOdd) {
+          menu.addClass('hm-menu-sub hm-menu-sub-odd');
+        } else if (depth > 1) {
+          menu.addClass('hm-menu-sub hm-menu-sub-even');
+        }
+
+        // apply descending z-index to menus stack behind parents
+        menu.css('z-index', depth * - 1);
+
         context = menu;
         menu = setMenu(context);
         depth++;
       }
       return this;
     },
-    setItemDepth: function() {
-      var depth = 1;
-
-      var setMenu = function(d) {
-        return $('.hm-menu-depth-' + d, this.container);
-      };
-
-      var menu = setMenu(depth);
-
-      while (menu.length) {
-        menu.children()
-          .filter('li')
-          .addClass('hm-item-depth-' + depth);
-        depth++;
-        menu = setMenu(depth);
-      }
+    setMenuIds: function() {
+      var m = $('ul', this.container).not('.hm-menu-primary');
+      m.each(function() {
+        var parentId = $(this).parent().prop('id');
+        $(this).prop('id', 'hm-child-of-' + parentId);
+      });
       return this;
     },
+    gatherMenus: function() {
+      var m = $('ul').not('.hm-menu-primary')
+      $('.horizontal-menu').append(m);
+      return this;
+    },
+    // setItemDepth: function() {
+    //   var depth = 1;
+    //
+    //   var setMenu = function(d) {
+    //     return $('.hm-menu-depth-' + d, this.container);
+    //   };
+    //
+    //   var menu = setMenu(depth);
+    //
+    //   while (menu.length) {
+    //     menu.children()
+    //       .filter('li')
+    //       .addClass('hm-item-depth-' + depth);
+    //     depth++;
+    //     menu = setMenu(depth);
+    //   }
+    //   return this;
+    // },
     // assign css classes based on how deep a menu and its items sit in the
     //  menu structure, relative to the overall container
-    setDepth: function() {
-      this.setMenuDepth()
-        .setItemDepth();
-      return this;
-    },
+    // setDepth: function() {
+    //   this.setMenuDepth()
+    //     .setItemDepth();
+    //   return this;
+    // },
     // only manage menu items that have a child ul. menu items with no children
     // will simply function as links
-    setItems: function() {
-      var hasChildrenFromSettings = this.settings.classes.hasChildren;
-      var items = $('li.' + hasChildrenFromSettings, this.container);
-      this.items = items.addClass(this.classes.hasChildren);
-      return this;
-    },
+    // setItems: function() {
+    //   var hasChildrenFromSettings = this.settings.classes.hasChildren;
+    //   var items = $('li.' + hasChildrenFromSettings, this.container);
+    //   this.items = items.addClass(this.classes.hasChildren);
+    //   return this;
+    // },
     setActiveTrail: function() {
       var activeFromSettings = $('.' + this.settings.classes.activeTrail, this.container);
       this.activeTrail = activeFromSettings.addClass(this.classes.activeTrail);
@@ -96,15 +140,26 @@
       if (noDelay && item.length) {
         this.items.removeClass('hm-current');
         item.addClass('hm-current');
-        this.open();
+        this.open(item.parent());
       } else if (item.length) {
         var that = this;
-        this.items.removeClass('hm-current');
+        // this.items.removeClass('hm-current');
+        // get item and ancestors in array, ordered by anscestry (desc)
+
+        // var ancestry = item.parents('li').get().reverse();
+        // ancestry.push(item.get(0));
+        // $(ancestry).each(function() {
+        //   $(this).addClass('woofer')
+        //     .delay(2000 )
+        //     .queue(function(next) {
+        //       next();
+        //     });
+        // });
 
         item.addClass('hm-current')
           .delay(500)
           .queue(function(next) {
-            that.open();
+            that.open(item.parent());
             next();
           });
       } else {
@@ -139,12 +194,10 @@
       });
       return this;
     },
-    open: function() {
-      if (!this.isOpen) {
-        this.container.addClass('hm-open');
-        this.isOpen = true;
-        this.settings.onOpen(this);
-      }
+    open: function(menu) {
+      menu.addClass('hm-open');
+      this.isOpen = true;
+      this.settings.onOpen(this);
     },
     close: function() {
       if (this.container.hasClass('hm-open')) {
@@ -183,16 +236,5 @@
       menu.init();
     });
   };
-
-  $.fn.reverse = function() {
-    return this.each(function() {
-      var r = [];
-
-      for(var i = this.length - 1; i > -1; i--) {
-        r.push(this[i]);
-      }
-      return r;
-    });
-  }
 
 })(jQuery);

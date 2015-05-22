@@ -16,3 +16,16 @@ TODO:
 * ~~integrate event handlers into class definition~~
 * ~~add event callbacks~~
 * allow multiple depths of items
+
+Multiple Depth Work Flow
+* ~~li's with children~~
+  * ~~css class of hm-item-has-children~~
+  * ~~identity active trail~~
+  * ~~give uuid as css id~~
+* ~~menus (css class)~~
+  * ~~top level vs sub menu~~
+  * ~~if sub, even or odd~~
+  * ~~child of unique li~~
+  * somehow provide descending z-indexes
+* ~~explode menus so that they are all siblings and direct children of container~~
+* child menus need to be flush bottom with their parent li's parent menu, on init or when parent has moved - this makes me think of observer or sub/pub
