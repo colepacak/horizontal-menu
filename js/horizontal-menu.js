@@ -1,28 +1,32 @@
-(function($) {
+var HorizontalMenu = (function($) {
 
-  function HorizontalMenu(settings) {
+  var Constructor = function(settings) {
     // store settings for later use
     this.settings = settings;
     this.container = $(settings.container);
     this.items = [];
     this.isOpen = false;
+    this.hasCurrentSubItem = false;
     this.activeTrail = [];
     this.leaveTimer;
   }
 
-  HorizontalMenu.prototype = {
+  Constructor.prototype = {
     classes: {
       hasChildren: 'hm-item-has-children',
       activeTrail: 'hm-active-trail'
     },
 
     init: function() {
+      // which methods should be blocking?
+      // which should be async?
       this.setParentItems()
         .setActiveTrail()
         .setItemIds()
         .setMenuDepth()
         .setMenuIds()
-        .gatherMenus();
+        .gatherMenus()
+        .bindEvents();
       // this.setDepth()
       //   .setItems()
       //   .setCurrent(this.activeTrail, true)
@@ -98,73 +102,51 @@
       $('.horizontal-menu').append(m);
       return this;
     },
-    // setItemDepth: function() {
-    //   var depth = 1;
-    //
-    //   var setMenu = function(d) {
-    //     return $('.hm-menu-depth-' + d, this.container);
-    //   };
-    //
-    //   var menu = setMenu(depth);
-    //
-    //   while (menu.length) {
-    //     menu.children()
-    //       .filter('li')
-    //       .addClass('hm-item-depth-' + depth);
-    //     depth++;
-    //     menu = setMenu(depth);
-    //   }
-    //   return this;
-    // },
-    // assign css classes based on how deep a menu and its items sit in the
-    //  menu structure, relative to the overall container
-    // setDepth: function() {
-    //   this.setMenuDepth()
-    //     .setItemDepth();
-    //   return this;
-    // },
-    // only manage menu items that have a child ul. menu items with no children
-    // will simply function as links
-    // setItems: function() {
-    //   var hasChildrenFromSettings = this.settings.classes.hasChildren;
-    //   var items = $('li.' + hasChildrenFromSettings, this.container);
-    //   this.items = items.addClass(this.classes.hasChildren);
-    //   return this;
-    // },
     setActiveTrail: function() {
       var activeFromSettings = $('.' + this.settings.classes.activeTrail, this.container);
       this.activeTrail = activeFromSettings.addClass(this.classes.activeTrail);
       return this;
     },
     setCurrent: function(item, noDelay) {
-      if (noDelay && item.length) {
-        this.items.removeClass('hm-current');
-        item.addClass('hm-current');
-        this.open(item.parent());
-      } else if (item.length) {
-        var that = this;
-        // this.items.removeClass('hm-current');
-        // get item and ancestors in array, ordered by anscestry (desc)
+      var that = this;
+      var i = new Item(item, this);
 
-        // var ancestry = item.parents('li').get().reverse();
-        // ancestry.push(item.get(0));
-        // $(ancestry).each(function() {
-        //   $(this).addClass('woofer')
-        //     .delay(2000 )
-        //     .queue(function(next) {
-        //       next();
-        //     });
-        // });
-
-        item.addClass('hm-current')
-          .delay(500)
-          .queue(function(next) {
-            that.open(item.parent());
-            next();
-          });
-      } else {
-        this.close();
+      // check delay, isOpen, and hasCurrentSubItem
+      // how should current item class be applied? ancestors of sub menu items should
+      // probably keep theirs to show ancestry
+      if (!this.isOpen) {
+        i.slideChildBar();
       }
+
+      // if (noDelay && ci.length) {
+      //   // does this matter anymore since there is no longer just one 'current' item?
+      //   this.items.removeClass('hm-current');
+      //   ci.addClass('hm-current');
+      //   this.open(ci.parent());
+      // } else if (ci.length) {
+      //   var that = this;
+      //   // this.items.removeClass('hm-current');
+      //   // get item and ancestors in array, ordered by anscestry (desc)
+      //
+      //   // var ancestry = item.parents('li').get().reverse();
+      //   // ancestry.push(item.get(0));
+      //   // $(ancestry).each(function() {
+      //   //   $(this).addClass('woofer')
+      //   //     .delay(2000 )
+      //   //     .queue(function(next) {
+      //   //       next();
+      //   //     });
+      //   // });
+      //
+      //   item.addClass('hm-current')
+      //     .delay(500)
+      //     .queue(function(next) {
+      //       that.open(ci.parent());
+      //       next();
+      //     });
+      // } else {
+      //   this.close();
+      // }
       return this;
     },
     bindEvents: function() {
@@ -195,8 +177,8 @@
       return this;
     },
     open: function(menu) {
-      menu.addClass('hm-open');
-      this.isOpen = true;
+      // menu.addClass('hm-open');
+      // this.isOpen = true;
       this.settings.onOpen(this);
     },
     close: function() {
@@ -207,7 +189,7 @@
           .queue(function(next) {
             that.items.filter('.hm-current')
               .removeClass('hm-current');
-            that.isOpen = false;
+            // that.isOpen = false;
             that.settings.onClose(this);
             next();
           });
@@ -236,5 +218,7 @@
       menu.init();
     });
   };
+
+  return Constructor;
 
 })(jQuery);
