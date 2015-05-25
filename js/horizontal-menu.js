@@ -5,8 +5,9 @@ var HorizontalMenu = (function($) {
     this.settings = settings;
     this.container = $(settings.container);
     this.items = [];
-    this.isOpen = false;
+    this.status = 'closed';
     this.hasCurrentSubItem = false;
+    this.activeItemPrimary;
     this.activeTrail = [];
     this.leaveTimer;
   }
@@ -25,13 +26,10 @@ var HorizontalMenu = (function($) {
         .setItemIds()
         .setMenuDepth()
         .setMenuIds()
-        .gatherMenus()
-        .bindEvents();
-      // this.setDepth()
-      //   .setItems()
-      //   .setCurrent(this.activeTrail, true)
-      //   .bindEvents()
-      //   .settings.onInit(this);
+        .explodeBars()
+        .bindEvents()
+        .setCurrent(this.activeTrail, true)
+        .settings.onInit(this);
     },
     // only manage menu items that have a child ul. menu items with no children
     // will simply function as links
@@ -43,6 +41,7 @@ var HorizontalMenu = (function($) {
     },
     setItemIds: function() {
       var items = $('li.' + this.classes.hasChildren);
+      // this could be passed to the Item prototype
       items.each(function() {
         var id = $.uuid();
         $(this).prop('id', id);
@@ -69,15 +68,15 @@ var HorizontalMenu = (function($) {
         var isDepthOdd = depth % 2;
 
         if (depth === 1) {
-          menu.addClass('hm-menu-primary');
+          menu.addClass('hm-bar-primary');
         } else {
-          menu.addClass('hm-menu-sub');
+          menu.addClass('hm-bar-sub');
         }
 
         if (depth > 1 && isDepthOdd) {
-          menu.addClass('hm-menu-sub hm-menu-sub-odd');
+          menu.addClass('hm-bar-sub hm-bar-sub-odd');
         } else if (depth > 1) {
-          menu.addClass('hm-menu-sub hm-menu-sub-even');
+          menu.addClass('hm-bar-sub hm-bar-sub-even');
         }
 
         // apply descending z-index to menus stack behind parents
@@ -90,16 +89,16 @@ var HorizontalMenu = (function($) {
       return this;
     },
     setMenuIds: function() {
-      var m = $('ul', this.container).not('.hm-menu-primary');
+      var m = $('ul', this.container).not('.hm-bar-primary');
       m.each(function() {
         var parentId = $(this).parent().prop('id');
         $(this).prop('id', 'hm-child-of-' + parentId);
       });
       return this;
     },
-    gatherMenus: function() {
-      var m = $('ul').not('.hm-menu-primary')
-      $('.horizontal-menu').append(m);
+    explodeBars: function() {
+      var b = $('ul').not('.hm-bar-primary')
+      $('.horizontal-menu').append(b);
       return this;
     },
     setActiveTrail: function() {
@@ -108,14 +107,26 @@ var HorizontalMenu = (function($) {
       return this;
     },
     setCurrent: function(item, noDelay) {
+
+      if (!item.length) { return this; }
+
       var that = this;
       var i = new Item(item, this);
 
-      // check delay, isOpen, and hasCurrentSubItem
-      // how should current item class be applied? ancestors of sub menu items should
-      // probably keep theirs to show ancestry
-      if (!this.isOpen) {
-        i.slideChildBar();
+      if (this.status === 'closed') {
+        // show (slide) the child bar of item
+        // set status to shallow
+        i.showChildBar(this.status);
+        this.status = 'shallow';
+        this.activeItemPrimary = item;
+      } else if (this.status === 'shallow' && i.isDescendantOf(this.activeItemPrimary)) {
+        // show (slide) the child bar of item and set status to deep
+        i.showChildBar(this.status);
+        this.status = 'deep';
+      } else if (this.status === 'shallow') {
+        // dismiss current primary, show child bar of item, status stays shallow
+      } else {
+        // if deep,
       }
 
       // if (noDelay && ci.length) {
@@ -176,24 +187,26 @@ var HorizontalMenu = (function($) {
       });
       return this;
     },
-    open: function(menu) {
-      // menu.addClass('hm-open');
-      // this.isOpen = true;
-      this.settings.onOpen(this);
-    },
+    // open: function(status) {
+    //   // this class may not be needed
+    //   // this.container.addClass('hm-open');
+    //   this.status = status;
+    //   this.settings.onOpen(this);
+    //   return this;
+    // },
     close: function() {
-      if (this.container.hasClass('hm-open')) {
-        var that = this;
-        this.container.removeClass('hm-open')
-          .delay(500)
-          .queue(function(next) {
-            that.items.filter('.hm-current')
-              .removeClass('hm-current');
-            // that.isOpen = false;
-            that.settings.onClose(this);
-            next();
-          });
-      }
+      // if (this.container.hasClass('hm-open')) {
+      //   var that = this;
+      //   this.container.removeClass('hm-open')
+      //     .delay(500)
+      //     .queue(function(next) {
+      //       that.items.filter('.hm-current')
+      //         .removeClass('hm-current');
+      //       // that.isOpen = false;
+      //       that.settings.onClose(this);
+      //       next();
+      //     });
+      // }
     },
     reset: function() {
       this.setCurrent(this.activeTrail);

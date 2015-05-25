@@ -8,7 +8,7 @@ var Item = (function($) {
   }
 
   Constructor.prototype = {
-    slideChildBar: function() {
+    showChildBar: function() {
       var that = this;
       var slideDistance;
       var b = this.parentBar.css('bottom');
@@ -22,8 +22,11 @@ var Item = (function($) {
 
       this.childBar.animate({
         bottom: slideDistance * -1
-      }, 300, function() {
-        that.gatherDescendantBars();
+      }, {
+        duration: 300,
+        complete: function() {
+          that.gatherDescendantBars();
+        }
       });
     },
     gatherDescendantBars: function() {
@@ -38,6 +41,18 @@ var Item = (function($) {
           });
         });
       }
+    },
+    isDescendantOf: function(elem) {
+      var compare = function(i) {
+        if (i.parent().hasClass('hm-bar-primary')) {
+          return i.prop('id') === elem.prop('id');
+        } else {
+          var pid = i.parent().prop('id');
+          return compare($('li#' + pid.replace('hm-child-of-', '')));
+        }
+      }
+
+      return compare(this.elem);
     }
   }
 

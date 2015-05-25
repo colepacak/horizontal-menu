@@ -28,4 +28,4 @@ Multiple Depth Work Flow
   * ~~child of unique li~~
   * somehow provide descending z-indexes
 * ~~explode menus so that they are all siblings and direct children of container~~
-* child menus need to be flush bottom with their parent li's parent menu, on init or when parent has moved - this makes me think of observer or sub/pub
+* ~~child menus need to be flush bottom with their parent li's parent menu, on init or when parent has moved~~
