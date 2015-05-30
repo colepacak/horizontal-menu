@@ -65,7 +65,7 @@ $tablet-landscape-only: $tablet-landscape $desktop - 1;
 }
 
 // menus
-ul.hm-bar-primary {
+ul#hm-primary-bar {
   position: relative;
   float: left;
   margin-left: 15px;
@@ -104,7 +104,7 @@ ul.hm-bar-primary {
 }
 
 // sub-menus
-ul.hm-bar-sub {
+ul.hm-sub-bar {
   position: absolute;
   left: 0;
   bottom: 0;
@@ -121,13 +121,13 @@ ul.hm-bar-sub {
     width: 200%;
     content: "";
   }
-  &.hm-bar-sub-even {
+  &.hm-sub-bar-even {
     background: $light-gray;
     &:before {
       background: $light-gray;
     }
   }
-  &.hm-bar-sub-odd {
+  &.hm-sub-bar-odd {
     background: $dark-gray;
     &:before {
       background: $dark-gray;

@@ -55,12 +55,12 @@
     .horizontal-menu a.active {
       color: #d2b53e; }
 
-ul.hm-bar-primary {
+ul#hm-primary-bar {
   position: relative;
   float: left;
   margin-left: 15px;
   position: relative; }
-  ul.hm-bar-primary:before {
+  ul#hm-primary-bar:before {
     display: block;
     position: absolute;
     top: 0;
@@ -69,7 +69,7 @@ ul.hm-bar-primary {
     height: 48px;
     content: "";
     background: black; }
-  ul.hm-bar-primary:after {
+  ul#hm-primary-bar:after {
     display: block;
     position: absolute;
     top: 0;
@@ -78,15 +78,15 @@ ul.hm-bar-primary {
     height: 48px;
     content: "";
     background: black; }
-  ul.hm-bar-primary li:hover > a {
+  ul#hm-primary-bar li:hover > a {
     color: #d2b53e; }
-  ul.hm-bar-primary li > a {
+  ul#hm-primary-bar li > a {
     z-index: 1;
     padding: 13px 20px;
     font-size: 18px;
     background: black; }
 
-ul.hm-bar-sub {
+ul.hm-sub-bar {
   position: absolute;
   left: 0;
   bottom: 0;
@@ -96,7 +96,7 @@ ul.hm-bar-sub {
   width: 100vw;
   min-height: 46px;
   margin-left: 23px; }
-  ul.hm-bar-sub:before {
+  ul.hm-sub-bar:before {
     display: block;
     position: absolute;
     top: 0;
@@ -104,23 +104,23 @@ ul.hm-bar-sub {
     height: 46px;
     width: 200%;
     content: ""; }
-  ul.hm-bar-sub.hm-bar-sub-even {
+  ul.hm-sub-bar.hm-sub-bar-even {
     background: #dbdbdb; }
-    ul.hm-bar-sub.hm-bar-sub-even:before {
+    ul.hm-sub-bar.hm-sub-bar-even:before {
       background: #dbdbdb; }
-  ul.hm-bar-sub.hm-bar-sub-odd {
+  ul.hm-sub-bar.hm-sub-bar-odd {
     background: #d3d3d3; }
-    ul.hm-bar-sub.hm-bar-sub-odd:before {
+    ul.hm-sub-bar.hm-sub-bar-odd:before {
       background: #d3d3d3; }
-  ul.hm-bar-sub li {
+  ul.hm-sub-bar li {
     display: inline-block;
     float: none; }
-  ul.hm-bar-sub a {
+  ul.hm-sub-bar a {
     font-size: 14px;
     color: black;
     padding: 14px 12px;
     text-transform: none; }
-    ul.hm-bar-sub a.active, ul.hm-bar-sub a:focus, ul.hm-bar-sub a:hover {
+    ul.hm-sub-bar a.active, ul.hm-sub-bar a:focus, ul.hm-sub-bar a:hover {
       color: white; }
 
 .hm-current > a {
