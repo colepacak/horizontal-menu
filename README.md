@@ -29,3 +29,7 @@ Multiple Depth Work Flow
   * somehow provide descending z-indexes
 * ~~explode menus so that they are all siblings and direct children of container~~
 * ~~child menus need to be flush bottom with their parent li's parent menu, on init or when parent has moved~~
+* dismissing - possibly the last frontier
+  * go back and add a css prop on bars for open AND for menu depth
+  * then, when an item needs to dismiss its child bars, just get the ones that are open, order by depth, reverse
+  * each one - along with those of higher depths - slides up its one height

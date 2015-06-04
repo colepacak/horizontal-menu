@@ -1,48 +1,17 @@
 var Item = (function($) {
 
-  var Constructor = function(elem, menu) {
+  var Constructor = function(elem, menuElem) {
     this.elem = $(elem);
     this.id = this.elem.prop('id');
-    this.menu = menu;
+    this.menuElem = menuElem;
     this.parentBar = this.elem.parent();
     this.childBar = $('#hm-child-of-' + this.id);
   }
 
   Constructor.prototype = {
-    showChildBar: function(anim) {
-      var that = this;
-      var slideDistance;
-      var b = this.parentBar.css('bottom');
-      var h = this.parentBar.outerHeight(true);
-
-      if (b === 'auto') {
-        slideDistance = h;
-      } else {
-        slideDistance = (Math.abs(parseInt(b)) + h);
-      }
-
-      this.childBar.animate({
-        bottom: slideDistance * -1
-      }, {
-        duration: anim ? 0 : 300,
-        complete: function() {
-          that.muster();
-        }
-      });
-    },
-    muster: function() {
-      // queue up - by position - the children of the newly revealed bar
-      // so they'll be ready to animate themselves if their parent li is set to active
-      var that = this;
-      var items = $('li.' + this.menu.classes.hasChildren, this.childBar);
-
-      if (items.length) {
-        items.each(function() {
-          $('#hm-child-of-' + $(this).prop('id')).css({
-            bottom: that.childBar.css('bottom')
-          });
-        });
-      }
+    showChildBar: function() {
+      var childBar = new Bar('ul#hm-child-of-' + this.id, this.menuElem);
+      childBar.show();
     },
     hasSameIdAs: function(item) {
       return this.id === item.id;
@@ -78,7 +47,7 @@ var Item = (function($) {
 
       if (pid !== '') {
         var closestItemId = pid.replace('hm-child-of-', '');
-        var c = new Item('li#' + closestItemId, this.menu);
+        var c = new Item('li#' + closestItemId, this.menuElem);
       }
 
       return c;

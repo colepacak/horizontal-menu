@@ -3,7 +3,7 @@ var Menu = (function($) {
   var Constructor = function(settings) {
     // store settings for later use
     this.settings = settings;
-    this.container = $(settings.container);
+    this.elem = $(settings.container);
     this.items = [];
     this.activeItem = null;
     this.activeTrail = [];
@@ -11,11 +11,6 @@ var Menu = (function($) {
   }
 
   Constructor.prototype = {
-    classes: {
-      hasChildren: 'hm-item-has-children',
-      activeTrail: 'hm-active-trail'
-    },
-
     init: function() {
       // which methods should be blocking?
       // which should be async?
@@ -35,12 +30,12 @@ var Menu = (function($) {
     // this could be passed to the Item prototype
     setParentItems: function() {
       var settingsClass = this.settings.classes.hasChildren;
-      var items = $('li.' + settingsClass, this.container);
-      this.items = items.addClass(this.classes.hasChildren);
+      var items = $('li.' + settingsClass, this.elem);
+      this.items = items.addClass(MenuClasses.hasChildren);
       return this;
     },
     setItemIds: function() {
-      var items = $('li.' + this.classes.hasChildren);
+      var items = $('li.' + MenuClasses.hasChildren);
       // this could be passed to the Item prototype
       items.each(function() {
         var id = $.uuid();
@@ -50,7 +45,7 @@ var Menu = (function($) {
     },
     // move to bar proto
     setBarDepth: function() {
-      var context = this.container;
+      var context = this.elem;
       var depth = 1;
 
       var setBar = function(context) {
@@ -92,7 +87,7 @@ var Menu = (function($) {
     },
     // move to bar proto
     setBarIds: function() {
-      var b = $('ul', this.container).not('.hm-primary-bar');
+      var b = $('ul', this.elem).not('.hm-primary-bar');
       b.each(function() {
         var parentId = $(this).parent().prop('id');
         $(this).prop('id', 'hm-child-of-' + parentId);
@@ -105,8 +100,8 @@ var Menu = (function($) {
       return this;
     },
     setActiveTrail: function() {
-      var activeFromSettings = $('.' + this.settings.classes.activeTrail, this.container);
-      this.activeTrail = activeFromSettings.addClass(this.classes.activeTrail);
+      var activeFromSettings = $('.' + this.settings.classes.activeTrail, this.elem);
+      this.activeTrail = activeFromSettings.addClass(MenuClasses.activeTrail);
       return this;
     },
     setActive: function(item, noDelay) {
@@ -151,7 +146,7 @@ var Menu = (function($) {
 
       // reset active trail, close the menu when mousing away from open menu
       // with no active trail
-      this.container.on('mouseleave', function() {
+      this.elem.on('mouseleave', function() {
         that.leaveTimer = setTimeout(function() {
           that.reset();
         }, 1000);
@@ -159,7 +154,7 @@ var Menu = (function($) {
 
       // allows user to quickly navigate away and right back to menu without
       // resetting current menu item
-      this.container.on('mouseenter', function() {
+      this.elem.on('mouseenter', function() {
         if (typeof that.leaveTimer !== 'undefined') {
           clearTimeout(that.leaveTimer);
         }
