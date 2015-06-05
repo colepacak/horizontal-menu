@@ -104,25 +104,43 @@ var Menu = (function($) {
       this.activeTrail = activeFromSettings.addClass(MenuClasses.activeTrail);
       return this;
     },
+    hideBars: function() {
+      var that = this;
+      // dismiss ready bars
+      var readyBars = $('ul.hm-bar-status-ready', this.elem);
+      // need to implement promises
+      readyBars.each(function() {
+        var b = new Bar('ul#' + $(this).prop('id'), that.elem);
+        b.hide();
+      });
+      // hide shown bars, sorted by ascending ancestry
+      var shownBars = $($('ul.hm-bar-status-show', this.elem).get().reverse());
+      shownBars.each(function() {
+        var b = new Bar('ul#' + $(this).prop('id'), that.elem);
+        b.hide();
+      });
+    },
     setActive: function(item, noDelay) {
       // is this totally legit?
       if (!item.length) { return this; }
 
-      var selected = new Item(item, this);
+      var selected = new Item(item, this.elem);
       // when menu is closed
       // should this be one-off? where do i return?
+      // should all of these checks be housed inside the showChildBar method
       if (this.activeItem === null) {
         selected.showChildBar();
         this.activeItem = selected;
       } else if (selected.isSiblingTo(this.activeItem)) {
         console.log('sibs');
         // dismiss all bars (no slide), show selected child bars (no slide)
-      } else if (selected.isChildItemOf(this.activeItem)) {
+      } else if (selected.isChildOf(this.activeItem)) {
         selected.showChildBar();
         this.activeItem = selected;
       } else if (selected.isAncestorOf(this.activeItem)) {
         console.log('is ancs');
         // dismiss all bars
+        this.hideBars();
       } else {
         // selected is not an ancestor of active
         var barId = selected.parentBar.prop('id');

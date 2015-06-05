@@ -13,7 +13,7 @@ var Item = (function($) {
       var childBar = new Bar('ul#hm-child-of-' + this.id, this.menuElem);
       childBar.show();
     },
-    hasSameIdAs: function(item) {
+    isSameElemAs: function(item) {
       return this.id === item.id;
     },
     isAncestorOf: function(item) {
@@ -22,7 +22,7 @@ var Item = (function($) {
         var haveSameParentBar = anc.parentBar.prop('id') === desc.parentBar.prop('id');
 
         if (haveSameParentBar) {
-          return anc.hasSameIdAs(desc);
+          return anc.isSameElemAs(desc);
         } else {
           var closest = desc.getClosestItem();
           return compare(anc, closest);
@@ -31,12 +31,12 @@ var Item = (function($) {
 
       return compare(this, item);
     },
-    isChildItemOf: function(item) {
+    isChildOf: function(item) {
       var isChild = false;
       var c = this.getClosestItem();
 
       if (c !== null) {
-        isChild = c.hasSameIdAs(item);
+        isChild = c.isSameElemAs(item);
       }
 
       return isChild;
@@ -53,7 +53,8 @@ var Item = (function($) {
       return c;
     },
     isSiblingTo: function(item) {
-      return this.parentBar.prop('id') === item.parentBar.prop('id');
+      var hasSameParent = this.parentBar.prop('id') === item.parentBar.prop('id');
+      return hasSameParent && !this.isSameElemAs(item);
     },
     getAncestorByBar: function(barId) {
       var checkClosestBar = function(item) {
