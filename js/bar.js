@@ -46,22 +46,22 @@ var Bar = (function($) {
         }
       });
     },
-    hide: function(anim) {
+    hide: function(callback) {
       var that = this;
       var b = parseInt(this.elem.css('bottom'));
       var h = this.elem.outerHeight(true);
 
       var slideDistance = b + h;
 
-      this.elem.animate({
+      return this.elem.animate({
         bottom: slideDistance
       }, {
-        duration: anim ? 0 : 300,
+        duration: 300,
         complete: function() {
           that.updateStatus('ready')
             .dismiss();
-          }
-      })
+        }
+      });
     },
     dismiss: function() {
       var readyClass = 'hm-bar-status-ready';

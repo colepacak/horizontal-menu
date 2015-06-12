@@ -108,17 +108,29 @@ var Menu = (function($) {
       var that = this;
       // dismiss ready bars
       var readyBars = $('ul.hm-bar-status-ready', this.elem);
-      // need to implement promises
+
       readyBars.each(function() {
         var b = new Bar('ul#' + $(this).prop('id'), that.elem);
         b.hide();
       });
+
       // hide shown bars, sorted by ascending ancestry
       var shownBars = $($('ul.hm-bar-status-show', this.elem).get().reverse());
-      shownBars.each(function() {
-        var b = new Bar('ul#' + $(this).prop('id'), that.elem);
-        b.hide();
-      });
+      var index = 0;
+
+      var recursiveHide = function() {
+        var b = new Bar('ul#' + shownBars.eq(index).prop('id'), that.elem);
+        var promise = b.hide().promise();
+
+        return promise.then(function() {
+          index++;
+          if (index < shownBars.length) {
+            return recursiveHide();
+          }
+        });
+      };
+
+      return recursiveHide(index);
     },
     setActive: function(item, noDelay) {
       // is this totally legit?
