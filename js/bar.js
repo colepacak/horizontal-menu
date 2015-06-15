@@ -21,7 +21,7 @@ var Bar = (function($) {
       });
       return this;
     },
-    show: function(anim) {
+    show: function(animOp) {
       var that = this;
       var slideDistance;
       var b = this.parent.css('bottom');
@@ -36,17 +36,18 @@ var Bar = (function($) {
       this.elem.animate({
         bottom: slideDistance * -1
       }, {
-        duration: anim ? 0 : 300,
+        duration: animOp === 'noSlide' ? 0 : 300,
         complete: function() {
           that.updateStatus('show')
             .dismiss()
+            // dismiss all bars that are ready (before mustering children),
+            // they don't need to linger around
             .musterChildren();
-          // dismiss all bars that are ready (before mustering children), they don't need to linger around
 
         }
       });
     },
-    hide: function(callback) {
+    hide: function(animOp) {
       var that = this;
       var b = parseInt(this.elem.css('bottom'));
       var h = this.elem.outerHeight(true);
@@ -56,7 +57,7 @@ var Bar = (function($) {
       return this.elem.animate({
         bottom: slideDistance
       }, {
-        duration: 300,
+        duration: animOp == 'noSlide' ? 0 : 300,
         complete: function() {
           that.updateStatus('ready')
             .dismiss();
@@ -89,6 +90,10 @@ var Bar = (function($) {
         });
       }
     },
+    hasItem: function(item) {
+      var childItems = $('li.' + MenuClasses.hasChildren, this.elem);
+      return childItems.is('#' + item.id);
+    }
   }
 
   function getParent(id, menuElem) {

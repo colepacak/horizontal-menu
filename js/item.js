@@ -9,9 +9,12 @@ var Item = (function($) {
   }
 
   Constructor.prototype = {
-    showChildBar: function() {
+    showChildBar: function(animOp) {
       var childBar = new Bar('ul#hm-child-of-' + this.id, this.menuElem);
-      childBar.show();
+      childBar.show(animOp);
+    },
+    hasShownChildBars: function() {
+      return this.childBar.hasClass('hm-bar-status-show');
     },
     isSameElemAs: function(item) {
       return this.id === item.id;
@@ -66,23 +69,7 @@ var Item = (function($) {
         }
       }
       return checkClosestBar(this);
-    },
-    // we alredy know selected is not ancestor of active
-    //
-
-    // relic, the real should be isDescendantOf given primary level item
-    // isDescendantOf: function(elem) {
-    //   var compare = function(i) {
-    //     if (i.parent().hasClass('hm-bar-primary')) {
-    //       return i.prop('id') === elem.prop('id');
-    //     } else {
-    //       var pid = i.parent().prop('id');
-    //       return compare($('li#' + pid.replace('hm-child-of-', '')));
-    //     }
-    //   }
-    //
-    //   return compare(this.elem);
-    // },
+    }
   }
 
   return Constructor;

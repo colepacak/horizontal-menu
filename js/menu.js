@@ -104,7 +104,7 @@ var Menu = (function($) {
       this.activeTrail = activeFromSettings.addClass(MenuClasses.activeTrail);
       return this;
     },
-    hideBars: function() {
+    hideChildBarsOf: function(selectedItem, animOp) {
       var that = this;
       // dismiss ready bars
       var readyBars = $('ul.hm-bar-status-ready', this.elem);
@@ -115,44 +115,63 @@ var Menu = (function($) {
       });
 
       // hide shown bars, sorted by ascending ancestry
+      // this needs to be limited to only child bars of the selected item
       var shownBars = $($('ul.hm-bar-status-show', this.elem).get().reverse());
       var index = 0;
 
       var recursiveHide = function() {
         var b = new Bar('ul#' + shownBars.eq(index).prop('id'), that.elem);
-        var promise = b.hide().promise();
+        // hide bars until we hit the parent bar of the selected item
+        if (b.hasItem(selectedItem)) {
+          var dfd = $.Deferred();
+          return dfd.resolve();
+        } else {
+          var promise = b.hide(animOp).promise();
 
-        return promise.then(function() {
-          index++;
-          if (index < shownBars.length) {
-            return recursiveHide();
-          }
-        });
+          return promise.then(function() {
+            index++;
+            if (index < shownBars.length) {
+              return recursiveHide();
+            }
+          });
+        }
       };
 
       return recursiveHide(index);
     },
     setActive: function(item, noDelay) {
-      // is this totally legit?
       if (!item.length) { return this; }
 
       var selected = new Item(item, this.elem);
       // when menu is closed
-      // should this be one-off? where do i return?
-      // should all of these checks be housed inside the showChildBar method
       if (this.activeItem === null) {
         selected.showChildBar();
-        this.activeItem = selected;
-      } else if (selected.isSiblingTo(this.activeItem)) {
-        console.log('sibs');
-        // dismiss all bars (no slide), show selected child bars (no slide)
+
       } else if (selected.isChildOf(this.activeItem)) {
+        // child
         selected.showChildBar();
-        this.activeItem = selected;
+
+      } else if (selected.isSiblingTo(this.activeItem)) {
+        // sibling
+        // i only want to do the noSlide when the activeItem doesn't have any shown children
+        // dismiss all bars (no slide), show selected child bars (no slide)
+        console.log('sibs');
+        // does the activeItem have any shown children? if yes
+        if (this.activeItem.hasShownChildBars()) {
+          this.hideChildBarsOf(selected, 'noSlide').then(function() {
+            selected.showChildBar('noSlide');
+          });
+        } else {
+          // if not, just do regular selected.showChildBar()
+          selected.showChildBar();
+        }
+
       } else if (selected.isAncestorOf(this.activeItem)) {
-        console.log('is ancs');
+        // ancestor, self-inclusive
         // dismiss all bars
-        this.hideBars();
+        console.log('is ancs');
+        this.hideChildBarsOf(selected);
+
       } else {
         // selected is not an ancestor of active
         var barId = selected.parentBar.prop('id');
@@ -160,7 +179,12 @@ var Menu = (function($) {
         // a dismisss all bars
         // show child bar of selected
         console.log('not an anc');
+        this.hideChildBarsOf(selected).then(function() {
+          selected.showChildBar();
+        });
       }
+
+      this.activeItem = selected;
 
       return this;
     },
