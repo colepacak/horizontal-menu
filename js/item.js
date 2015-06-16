@@ -20,7 +20,7 @@ var Item = (function($) {
       return this.id === item.id;
     },
     isAncestorOf: function(item) {
-      // method self inclusive, i.e. returns true if comparing object to itself
+      // method is self inclusive
       var compare = function(anc, desc) {
         var haveSameParentBar = anc.parentBar.prop('id') === desc.parentBar.prop('id');
 

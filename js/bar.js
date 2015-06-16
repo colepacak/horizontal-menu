@@ -39,9 +39,7 @@ var Bar = (function($) {
         duration: animOp === 'noSlide' ? 0 : 300,
         complete: function() {
           that.updateStatus('show')
-            .dismiss()
-            // dismiss all bars that are ready (before mustering children),
-            // they don't need to linger around
+            .dismissByStatus('ready')
             .musterChildren();
 
         }
@@ -60,14 +58,14 @@ var Bar = (function($) {
         duration: animOp == 'noSlide' ? 0 : 300,
         complete: function() {
           that.updateStatus('ready')
-            .dismiss();
+            .dismissByStatus('ready');
         }
       });
     },
-    dismiss: function() {
-      var readyClass = 'hm-bar-status-ready';
-      var bars = $('.' + readyClass, this.menuElem);
-      bars.removeClass(readyClass)
+    dismissByStatus: function(s) {
+      var statusClass = 'hm-bar-status-' + s;
+      var bars = $('.' + statusClass, this.menuElem);
+      bars.removeClass(statusClass)
         .css({
           bottom: 0
         });

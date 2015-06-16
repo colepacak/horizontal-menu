@@ -146,45 +146,29 @@ var Menu = (function($) {
       // when menu is closed
       if (this.activeItem === null) {
         selected.showChildBar();
-
       } else if (selected.isChildOf(this.activeItem)) {
         // child
         selected.showChildBar();
-
       } else if (selected.isSiblingTo(this.activeItem)) {
         // sibling
-        // i only want to do the noSlide when the activeItem doesn't have any shown children
-        // dismiss all bars (no slide), show selected child bars (no slide)
-        console.log('sibs');
-        // does the activeItem have any shown children? if yes
         if (this.activeItem.hasShownChildBars()) {
           this.hideChildBarsOf(selected, 'noSlide').then(function() {
             selected.showChildBar('noSlide');
           });
         } else {
-          // if not, just do regular selected.showChildBar()
           selected.showChildBar();
         }
-
       } else if (selected.isAncestorOf(this.activeItem)) {
         // ancestor, self-inclusive
-        // dismiss all bars
-        console.log('is ancs');
         this.hideChildBarsOf(selected);
-
       } else {
-        // selected is not an ancestor of active
-        var barId = selected.parentBar.prop('id');
-        var a = this.activeItem.getAncestorByBar(barId);
-        // a dismisss all bars
-        // show child bar of selected
-        console.log('not an anc');
+        // not an ancestor
         this.hideChildBarsOf(selected).then(function() {
           selected.showChildBar();
         });
       }
 
-      this.activeItem = selected;
+      this.activeItem = setActiveItem(this.activeItem, selected);
 
       return this;
     },
@@ -219,6 +203,22 @@ var Menu = (function($) {
       this.setActive(this.activeTrail);
     }
   };
+
+  function setActiveItem(currentActive, selected) {
+    var active;
+
+    if (
+      currentActive !== null &&
+      selected.parentBar.hasClass('hm-primary-bar') &&
+      selected.isAncestorOf(currentActive)
+    ) {
+      active = null;
+    } else {
+      active = selected;
+    }
+
+    return active;
+  }
 
   return Constructor;
 
