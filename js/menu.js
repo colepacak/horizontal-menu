@@ -200,7 +200,7 @@ var Menu = (function($) {
       return this;
     },
     reset: function() {
-      this.setActive(this.activeTrail);
+      this.setActive(this.activeTrail.last());
     }
   };
 

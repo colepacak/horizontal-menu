@@ -62,7 +62,11 @@ $tablet-landscape-only: $tablet-landscape $desktop - 1;
       color: $gold;
     }
   }
+  .hm-active-trail a {
+    color: $gold;
+  }
 }
+
 
 // menus
 ul#hm-primary-bar {

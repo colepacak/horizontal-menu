@@ -54,6 +54,8 @@
       outline: none; }
     .horizontal-menu a.active {
       color: #d2b53e; }
+  .horizontal-menu .hm-active-trail a {
+    color: #d2b53e; }
 
 ul#hm-primary-bar {
   position: relative;
