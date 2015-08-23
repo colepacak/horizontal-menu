@@ -10,6 +10,7 @@
   "dependencies": {
     "compass-mixins": "~1.0.2",
     "breakpoint-sass": "~2.5.0",
-    "jquery": "~2.1.4"
+    "jquery": "~2.1.4",
+    "jquery-uuid": "git@github.com:eburtsev/jquery-uuid.git"
   }
 }
