@@ -6,7 +6,7 @@ var Item = (function($) {
     this.menuElem = menuElem;
     this.parentBar = this.elem.parent();
     this.childBar = $('#hm-child-of-' + this.id);
-  }
+  };
 
   Constructor.prototype = {
     showChildBar: function(animOp) {
@@ -20,8 +20,14 @@ var Item = (function($) {
       return this.id === item.id;
     },
     isAncestorOf: function(item) {
-      // method is self inclusive
-      var compare = function(anc, desc) {
+      // method is not self-inclusive
+      if (this.isSameElemAs(item)) {
+        return false;
+      } else {
+        return compare(this, item);
+      }
+
+      function compare(anc, desc) {
         var haveSameParentBar = anc.parentBar.prop('id') === desc.parentBar.prop('id');
 
         if (haveSameParentBar) {
@@ -31,8 +37,6 @@ var Item = (function($) {
           return compare(anc, closest);
         }
       }
-
-      return compare(this, item);
     },
     isChildOf: function(item) {
       var isChild = false;
@@ -50,7 +54,7 @@ var Item = (function($) {
 
       if (pid !== '') {
         var closestItemId = pid.replace('hm-child-of-', '');
-        var c = new Item('li#' + closestItemId, this.menuElem);
+        c = new Item('li#' + closestItemId, this.menuElem);
       }
 
       return c;
@@ -67,10 +71,27 @@ var Item = (function($) {
         } else {
           return checkClosestBar(c);
         }
-      }
+      };
       return checkClosestBar(this);
+    },
+    getRelationshipTo: function(item) {
+      var relationship;
+
+      if (this.isSameElemAs(item)) {
+        relationship = 'self';
+      } else if (this.isChildOf(item)) {
+        relationship = 'child';
+      } else if (this.isSiblingTo(item)) {
+        relationship = 'sibling';
+      } else if (this.isAncestorOf(item)) {
+        relationship = 'ancestor';
+      } else {
+        relationship = 'nonAncestor';
+      }
+
+      return relationship;
     }
-  }
+  };
 
   return Constructor;
 

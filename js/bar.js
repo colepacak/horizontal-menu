@@ -5,7 +5,7 @@ var Bar = (function($) {
     this.id = this.elem.prop('id');
     this.menuElem = menuElem;
     this.parent = getParent(this.id, this.menuElem);
-  }
+  };
 
   Constructor.prototype = {
     updateStatus: function(s) {

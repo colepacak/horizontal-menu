@@ -8,7 +8,7 @@ var Menu = (function($) {
     this.activeItem = null;
     this.activeTrail = [];
     this.leaveTimer;
-  }
+  };
 
   Constructor.prototype = {
     init: function() {
@@ -43,7 +43,7 @@ var Menu = (function($) {
       });
       return this;
     },
-    // move to bar proto
+    // TODO: move to bar proto
     setBarDepth: function() {
       var context = this.elem;
       var depth = 1;
@@ -146,26 +146,39 @@ var Menu = (function($) {
       // when menu is closed
       if (this.activeItem === null) {
         selected.showChildBar();
-      } else if (selected.isChildOf(this.activeItem)) {
-        // child
-        selected.showChildBar();
-      } else if (selected.isSiblingTo(this.activeItem)) {
-        // sibling
-        if (this.activeItem.hasShownChildBars()) {
-          this.hideChildBarsOf(selected, 'noSlide').then(function() {
-            selected.showChildBar('noSlide');
-          });
-        } else {
-          selected.showChildBar();
-        }
-      } else if (selected.isAncestorOf(this.activeItem)) {
-        // ancestor, self-inclusive
-        this.hideChildBarsOf(selected);
       } else {
-        // not an ancestor
-        this.hideChildBarsOf(selected).then(function() {
-          selected.showChildBar();
-        });
+        // when menu is open
+        var relationship = selected.getRelationshipTo(this.activeItem);
+
+        switch (relationship) {
+          case 'self':
+            if (this.activeItem.hasShownChildBars()) {
+              this.hideChildBarsOf(selected);
+            } else {
+              selected.showChildBar();
+            }
+            break;
+          case 'child':
+            selected.showChildBar();
+            break;
+          case 'sibling':
+            if (this.activeItem.hasShownChildBars()) {
+              this.hideChildBarsOf(selected, 'noSlide').then(function () {
+                selected.showChildBar('noSlide');
+              });
+            } else {
+              selected.showChildBar();
+            }
+            break;
+          case 'ancestor':
+            this.hideChildBarsOf(selected);
+            break;
+          case 'nonAncestor':
+            this.hideChildBarsOf(selected).then(function () {
+              selected.showChildBar();
+            });
+            break;
+        }
       }
 
       this.activeItem = setActiveItem(this.activeItem, selected);
