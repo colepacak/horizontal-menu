@@ -95,4 +95,4 @@ var Item = (function($) {
 
   return Constructor;
 
-})(jQuery)
+})(jQuery);

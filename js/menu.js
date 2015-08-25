@@ -52,13 +52,11 @@ var Menu = (function($) {
         var b;
         if (context.prop('tagName') === 'UL') {
           b = $('> li > ul', context);
-        } else {
-          b = context.children().filter('ul');
         }
         return b;
       };
 
-      var bar = setBar(context);
+      var bar = $(this.elem.getNthClosestDescendants(2, 'ul'));
 
       while (bar.length) {
         var isDepthOdd = depth % 2;
@@ -95,7 +93,7 @@ var Menu = (function($) {
       return this;
     },
     explodeBars: function() {
-      var b = $('ul').not('.hm-primary-bar')
+      var b = $('ul').not('.hm-primary-bar');
       $('.horizontal-menu').append(b);
       return this;
     },
@@ -232,6 +230,35 @@ var Menu = (function($) {
 
     return active;
   }
+
+  $.fn.getNthClosestDescendants = function(n, type) {
+    var closestMatches = [];
+    var children = this.children();
+
+    recursiveMatch(children);
+
+    function recursiveMatch(children) {
+      var matches = children.filter(type);
+
+      if (
+        matches.length &&
+        closestMatches.length < n
+      ) {
+        var neededMatches = n - closestMatches.length;
+        var matchesToAdd = matches.slice(0, neededMatches);
+        matchesToAdd.each(function() {
+          closestMatches.push(this);
+        });
+      }
+
+      if (closestMatches.length < n) {
+        var newChildren = children.children();
+        recursiveMatch(newChildren);
+      }
+    }
+
+    return closestMatches;
+  };
 
   return Constructor;
 

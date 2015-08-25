@@ -8,9 +8,10 @@
         hasChildren: 'expanded',
         activeTrail: 'is-active-trail'
       },
+      numMenus: 1,
       onInit: function() {},
       onOpen: function() {},
-      onClose: function() {},
+      onClose: function() {}
     }, options);
 
     return this.each(function() {
