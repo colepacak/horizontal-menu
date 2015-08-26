@@ -8,6 +8,7 @@ $(function() {
     },
     onClose: function(menu) {
       console.log('on close');
-    }
+    },
+    excludeMenus: '.contextual-links'
   });
 });

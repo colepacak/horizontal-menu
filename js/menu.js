@@ -45,7 +45,6 @@ var Menu = (function($) {
     },
     // TODO: move to bar proto
     setBarDepth: function() {
-      var context = this.elem;
       var depth = 1;
 
       var setBar = function(context) {
@@ -56,7 +55,7 @@ var Menu = (function($) {
         return b;
       };
 
-      var bar = $(this.elem.getNthClosestDescendants(2, 'ul'));
+      var context = bar = $(this.elem.getNthClosestDescendants(this.settings.numMenus, 'ul'));
 
       while (bar.length) {
         var isDepthOdd = depth % 2;
@@ -93,7 +92,7 @@ var Menu = (function($) {
       return this;
     },
     explodeBars: function() {
-      var b = $('ul').not('.hm-primary-bar');
+      var b = $('ul', this.elem).not('.hm-primary-bar').not(this.settings.excludeMenus);
       $('.horizontal-menu').append(b);
       return this;
     },

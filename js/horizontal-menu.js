@@ -9,6 +9,7 @@
         activeTrail: 'is-active-trail'
       },
       numMenus: 1,
+      excludeMenus: '',
       onInit: function() {},
       onOpen: function() {},
       onClose: function() {}
