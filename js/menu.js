@@ -15,13 +15,14 @@ var Menu = (function($) {
       // which methods should be blocking?
       // which should be async?
       this.setParentItems()
-        .setActiveTrail()
+        .setActiveTrailClasses()
         .setItemIds()
         .setBarDepth()
         .setBarIds()
         .explodeBars()
         .bindEvents()
-        .setActive(this.activeTrail, true)
+        .setActiveTrail()
+        //.setActive(this.activeTrail, true)
         .settings.onInit(this);
     },
     // only manage menu items that have a child ul. menu items with no children
@@ -64,13 +65,12 @@ var Menu = (function($) {
           bar.addClass('hm-primary-bar');
           bar.prop('id', 'hm-primary-bar');
         } else {
-          bar.addClass('hm-sub-bar');
-        }
-
-        if (depth > 1 && isDepthOdd) {
-          bar.addClass('hm-sub-bar hm-sub-bar-odd');
-        } else if (depth > 1) {
-          bar.addClass('hm-sub-bar hm-sub-bar-even');
+          bar.addClass('hm-sub-bar hm-sub-bar-depth-' + depth);
+          if (isDepthOdd) {
+            bar.addClass('hm-sub-bar-odd');
+          } else {
+            bar.addClass('hm-sub-bar-even');
+          }
         }
 
         // apply descending z-index to menus stack behind parents
@@ -96,10 +96,20 @@ var Menu = (function($) {
       $('.horizontal-menu').append(b);
       return this;
     },
-    setActiveTrail: function() {
-      var activeFromSettings = $('.' + this.settings.classes.activeTrail, this.elem);
+    setActiveTrailClasses: function() {
+      var activeFromSettings = $('li.' + this.settings.classes.activeTrail, this.elem);
       this.activeTrail = activeFromSettings.addClass(MenuClasses.activeTrail);
       return this;
+    },
+    setActiveTrail: function(noDelay) {
+      // look at items in this.activeTrail and show them successively
+      this.activeTrail.each.call(this, function(i, activeTrailItem) {
+        var item = new Item(activeTrailItem, this.elem);
+      });
+
+      // this may be better for resetActiveTrail since we'll start with the last item
+      // also, the ideal would be to start with the last, compare to this.activeItem, if not equal, hide bar
+
     },
     hideChildBarsOf: function(selectedItem, animOp) {
       var that = this;
@@ -210,7 +220,7 @@ var Menu = (function($) {
       return this;
     },
     reset: function() {
-      this.setActive(this.activeTrail.last());
+      //this.setActive(this.activeTrail);
     }
   };
 
