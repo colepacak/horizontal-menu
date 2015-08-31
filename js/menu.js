@@ -22,6 +22,7 @@ var Menu = (function($) {
         .explodeBars()
         .bindEvents()
         .setActiveTrail(0)
+        .fadeIn()
         .settings.onInit(this);
     },
     // this could be passed to the Item prototype
@@ -107,6 +108,11 @@ var Menu = (function($) {
         this.activeItem = new Item(this.activeTrail.eq(activeIndex), this.elem);
       }
 
+      return this;
+    },
+    fadeIn: function() {
+      // avoid pre-JS flash
+      this.elem.addClass('hm-has-init');
       return this;
     },
     hideChildBarsOf: function(selectedItem, animOp) {
