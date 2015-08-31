@@ -21,13 +21,9 @@ var Menu = (function($) {
         .setBarIds()
         .explodeBars()
         .bindEvents()
-        .setActiveTrail()
-        //.setActive(this.activeTrail, true)
+        .setActiveTrail(0)
         .settings.onInit(this);
     },
-    // only manage menu items that have a child ul. menu items with no children
-    // will simply function as links
-
     // this could be passed to the Item prototype
     setParentItems: function() {
       var settingsClass = this.settings.classes.hasChildren;
@@ -101,15 +97,17 @@ var Menu = (function($) {
       this.activeTrail = activeFromSettings.addClass(MenuClasses.activeTrail);
       return this;
     },
-    setActiveTrail: function(noDelay) {
-      // look at items in this.activeTrail and show them successively
-      this.activeTrail.each.call(this, function(i, activeTrailItem) {
-        var item = new Item(activeTrailItem, this.elem);
-      });
+    setActiveTrail: function(showToDepth) {
+      var index = 0;
 
-      // this may be better for resetActiveTrail since we'll start with the last item
-      // also, the ideal would be to start with the last, compare to this.activeItem, if not equal, hide bar
+      recursiveItemShow.call(this, this.activeTrail, index, showToDepth);
 
+      if (this.activeTrail.length) {
+        var activeIndex = this.activeTrail.length - 2;
+        this.activeItem = new Item(this.activeTrail.eq(activeIndex), this.elem);
+      }
+
+      return this;
     },
     hideChildBarsOf: function(selectedItem, animOp) {
       var that = this;
@@ -170,8 +168,8 @@ var Menu = (function($) {
             break;
           case 'sibling':
             if (this.activeItem.hasShownChildBars()) {
-              this.hideChildBarsOf(selected, 'noSlide').then(function () {
-                selected.showChildBar('noSlide');
+              this.hideChildBarsOf(selected).then(function () {
+                selected.showChildBar();
               });
             } else {
               selected.showChildBar();
@@ -220,7 +218,47 @@ var Menu = (function($) {
       return this;
     },
     reset: function() {
-      //this.setActive(this.activeTrail);
+      // if no active trail item, dismiss all
+      var that = this;
+      if (!this.activeTrail.length) {
+
+        // dismiss ready bars
+        var readyBars = $('ul.hm-bar-status-ready', this.elem);
+
+        readyBars.each(function() {
+          var b = new Bar('ul#' + $(this).prop('id'), that.elem);
+          b.hide();
+        });
+
+        var index = 0;
+        var shownBars = $($('.hm-bar-status-show', this.elem).get().reverse());
+
+        recursiveItemHide(shownBars, index);
+        this.activeItem = null;
+      } else {
+        // create bar array of active trail children
+        var activeTrailBars = this.activeTrail.map(function(index, item) {
+          return $('#hm-child-of-' + $(this).attr('id'), that.elem).get(0);
+        });
+        // find shown bars that need to be dismissed
+        var showToDepth = 0;
+        var shownBars = $('.hm-bar-status-show', this.elem);
+        var barsToRemove = shownBars.filter(function(index) {
+          var inArray = activeTrailBars.index($(this)) === -1 || index > showToDepth ? true : false;
+          return inArray;
+        });
+        // find bars that needed to be added back
+        var neededActiveTrailBars = activeTrailBars.filter(function(index) {
+          var inArray = shownBars.index($(this)) === -1 && index <= showToDepth ? true : false;
+          return inArray;
+        });
+
+        var indexRec = 0;
+        recursiveItemHide.call(this, $(barsToRemove.get().reverse()), indexRec).then(function() {
+          recursiveBarShow.call(that, $(neededActiveTrailBars.get().reverse()), indexRec);
+          that.activeItem = new Item(that.activeTrail.eq(that.activeTrail.length - 2));
+        });
+      }
     }
   };
 
@@ -239,6 +277,62 @@ var Menu = (function($) {
 
     return active;
   }
+
+  function recursiveBarShow(arr, index, showToDepth) {
+    if (
+      !arr.length ||
+      !arr.eq(index).length ||
+      index > showToDepth
+    ) { return; }
+
+    var that = this;
+
+    var b = new Bar(arr.eq(index), that.menuElem);
+    var promise = b.show().promise();
+    return promise.then(function() {
+      index++;
+      return recursiveBarShow.call(that, arr, index, showToDepth);
+    });
+  }
+
+  function recursiveItemShow(arr, index, showToDepth) {
+    if (
+      !arr.length ||
+      !arr.eq(index).length ||
+      index > showToDepth
+    ) { return; }
+
+    var that = this;
+    var item = new Item(arr.eq(index), this.elem);
+
+    if (!item.childBar.length) {
+      return;
+    }
+
+    var promise = item.showChildBar().promise();
+    return promise.then(function() {
+      index++;
+      return recursiveItemShow.call(that, arr, index, showToDepth);
+    });
+  }
+
+  function recursiveItemHide(arr, index) {
+    if (
+      !arr.length ||
+      !arr.eq(index).length) {
+      return $.Deferred().resolve();
+    }
+
+    var that = this;
+    var b = new Bar(arr.eq(index), this.elem);
+    var promise = b.hide().promise();
+
+    return promise.then(function () {
+      index++;
+      return recursiveItemHide.call(that, arr, index);
+    });
+  }
+
 
   $.fn.getNthClosestDescendants = function(n, type) {
     var closestMatches = [];

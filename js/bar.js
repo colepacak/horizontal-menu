@@ -11,7 +11,6 @@ var Bar = (function($) {
     updateStatus: function(s) {
       var that = this;
       var classList = this.elem.attr('class').split(/\s+/);
-      var current;
 
       $.each(classList, function(i, val) {
         if(val.match(/hm-bar-status-/)) {
@@ -25,7 +24,7 @@ var Bar = (function($) {
       var that = this;
       var slideDistance;
       var b = this.parent.css('bottom');
-      var h = this.parent.outerHeight(true);
+      var h = this.elem.outerHeight(true);
 
       if (b === 'auto') {
         slideDistance = h;
@@ -33,10 +32,10 @@ var Bar = (function($) {
         slideDistance = (Math.abs(parseInt(b)) + h);
       }
 
-      this.elem.animate({
+      return this.elem.animate({
         bottom: slideDistance * -1
       }, {
-        duration: animOp === 'noSlide' ? 0 : 300,
+        duration: animOp === 'noSlide' ? 0 : 500,
         complete: function() {
           that.updateStatus('show')
             .dismissByStatus('ready')
@@ -55,7 +54,7 @@ var Bar = (function($) {
       return this.elem.animate({
         bottom: slideDistance
       }, {
-        duration: animOp == 'noSlide' ? 0 : 300,
+        duration: animOp == 'noSlide' ? 0 : 500,
         complete: function() {
           that.updateStatus('ready')
             .dismissByStatus('ready');
@@ -92,7 +91,7 @@ var Bar = (function($) {
       var childItems = $('li.' + MenuClasses.hasChildren, this.elem);
       return childItems.is('#' + item.id);
     }
-  }
+  };
 
   function getParent(id, menuElem) {
     var itemId = id.replace('hm-child-of-', '');

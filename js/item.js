@@ -10,8 +10,10 @@ var Item = (function($) {
 
   Constructor.prototype = {
     showChildBar: function(animOp) {
+      if (!$('ul#hm-child-of-' + this.id, this.menuElem).length) { return; }
+
       var childBar = new Bar('ul#hm-child-of-' + this.id, this.menuElem);
-      childBar.show(animOp);
+      return childBar.show(animOp);
     },
     hasShownChildBars: function() {
       return this.childBar.hasClass('hm-bar-status-show');
