@@ -33,7 +33,7 @@ var Menu = (function($) {
       return this;
     },
     setItemIds: function() {
-      var items = $('li.' + MenuClasses.hasChildren);
+      var items = $('li', this.elem);
       // this could be passed to the Item prototype
       items.each(function() {
         var id = $.uuid();
