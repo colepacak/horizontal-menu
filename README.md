@@ -2,6 +2,7 @@ Horizontal Menu
 ===============
 
 How it works:
+
 * Click to activate
 * The crux of the library is the relationship between active and selected menu items. Their relationship determines how child menus are shown or hidden.
   * Selected item is child of active item: show child bar of selected.
