@@ -72,24 +72,18 @@ ul#hm-primary-bar {
   float: left;
   margin-left: 15px;
   position: relative; }
+  ul#hm-primary-bar:before, ul#hm-primary-bar:after {
+    display: block;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 1000px;
+    content: "";
+    background: black; }
   ul#hm-primary-bar:before {
-    display: block;
-    position: absolute;
-    top: 0;
-    right: 100%;
-    width: 1000px;
-    height: 48px;
-    content: "";
-    background: black; }
+    right: 100%; }
   ul#hm-primary-bar:after {
-    display: block;
-    position: absolute;
-    top: 0;
-    left: 100%;
-    width: 1000px;
-    height: 48px;
-    content: "";
-    background: black; }
+    left: 100%; }
   ul#hm-primary-bar li:hover > a {
     color: #d2b53e; }
   ul#hm-primary-bar li > a {
@@ -113,7 +107,7 @@ ul.hm-sub-bar {
     position: absolute;
     top: 0;
     right: 100%;
-    height: 48px;
+    bottom: 0;
     width: 200%;
     content: ""; }
   ul.hm-sub-bar.hm-sub-bar-even {

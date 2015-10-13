@@ -81,25 +81,21 @@ ul#hm-primary-bar {
   position: relative;
   float: left;
   margin-left: 15px;
-  &:before {
-    display: block;
-    position: absolute;
-    top: 0;
-    right: 100%;
-    width: 1000px;
-    height: 48px;
-    content: "";
-    background: $black;
-  }
+  &:before,
   &:after {
     display: block;
     position: absolute;
     top: 0;
-    left: 100%;
+    bottom: 0;
     width: 1000px;
-    height: 48px;
     content: "";
     background: $black;
+  }
+  &:before {
+    right: 100%;
+  }
+  &:after {
+    left: 100%;
   }
   position: relative;
   li {
@@ -129,7 +125,7 @@ ul.hm-sub-bar {
     position: absolute;
     top: 0;
     right: 100%;
-    height: $sub-menu-height;
+    bottom: 0;
     width: 200%;
     content: "";
   }
