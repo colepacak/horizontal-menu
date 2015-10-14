@@ -53,13 +53,13 @@ var Bar = (function($) {
 
       var slideDistance = b + h;
 
-      this.elem.css({ opacity: 0 });
 
       return this.elem.animate({
         bottom: slideDistance
       }, {
         duration: animOp == 'noSlide' ? 0 : 500,
         complete: function() {
+          that.elem.css({ opacity: 0 });
           that.updateStatus('ready')
             .dismissByStatus('ready');
         }
