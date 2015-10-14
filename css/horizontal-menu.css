@@ -101,7 +101,8 @@ ul.hm-sub-bar {
   box-sizing: border-box;
   width: 100vw;
   min-height: 48px;
-  margin-left: 23px; }
+  margin-left: 23px;
+  opacity: 0; }
   ul.hm-sub-bar:before {
     display: block;
     position: absolute;

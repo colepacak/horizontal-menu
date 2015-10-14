@@ -120,6 +120,7 @@ ul.hm-sub-bar {
   width: 100vw;
   min-height: $sub-menu-height;
   margin-left: 23px;
+  opacity: 0; // avoid flash of sub menus when menu is clicked before page has fully loaded
   &:before {
     display: block;
     position: absolute;

@@ -32,6 +32,8 @@ var Bar = (function($) {
         slideDistance = (Math.abs(parseInt(b)) + h);
       }
 
+      this.elem.css({ opacity: 1 });
+
       return this.elem.animate({
         bottom: slideDistance * -1
       }, {
@@ -50,6 +52,8 @@ var Bar = (function($) {
       var h = this.elem.outerHeight(true);
 
       var slideDistance = b + h;
+
+      this.elem.css({ opacity: 0 });
 
       return this.elem.animate({
         bottom: slideDistance
